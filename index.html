@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WASM Book Viewer</title>
+    <script src="main.js"></script>
+    <style>
+      body {
+        font-family: "Georgia", serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f1e8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 {
+        color: #4a4a4a;
+      }
+      #book {
+        width: 60%;
+        max-width: 800px;
+        height: 200px;
+        background: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      #page {
+        flex-grow: 1;
+        overflow-y: auto;
+        font-size: 18px;
+        color: #333;
+        line-height: 1.6;
+        text-align: justify;
+      }
+      #pageNumber {
+        text-align: right;
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 10px;
+      }
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      button {
+        background-color: #5a3d2b;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #774e35;
+      }
+      #editor {
+        margin-top: 20px;
+        width: 60%;
+        max-width: 800px;
+      }
+      textarea {
+        width: 100%;
+        height: 150px;
+        font-size: 16px;
+        padding: 10px;
+        margin-bottom: 10px;
+        resize: none;
+      }
+      #randomNumberDisplay {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #333;
+      }
+      canvas {
+        margin-top: 20px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WASM Book Viewer</h1>
+    <div id="book">
+      <div id="pageNumber">Page: 1/1</div>
+      <div id="page">Loading...</div>
+      <div class="controls">
+        <button id="prev">Previous</button>
+        <button id="next">Next</button>
+      </div>
+    </div>
+    <div id="editor">
+      <textarea id="editorText" placeholder="Edit this page..."></textarea>
+      <div class="controls">
+        <button id="accept">Accept</button>
+        <button id="reject">Reject</button>
+      </div>
+    </div>
+    <div>
+      <button id="generateRandom">Generate Random Number</button>
+      <div id="randomNumberDisplay">Random Number:</div>
+    </div>
+    <div>
+      <button id="generateShape">Generate Shape</button>
+      <canvas id="canvas" width="200" height="200"></canvas>
+    </div>
+
+    <script>
+      createModule()
+        .then((Module) => {
+          console.log("WASM Module Loaded");
+
+          // Load WASM functions
+          const getCurrentPage = Module.cwrap("getCurrentPage", "string", []);
+          const nextPage = Module.cwrap("nextPage", null, []);
+          const prevPage = Module.cwrap("prevPage", null, []);
+          const updatePageText = Module.cwrap("updatePageText", null, [
+            "string",
+          ]);
+          const rejectPageChanges = Module.cwrap("rejectPageChanges", null, []);
+          const getTotalPages = Module.cwrap("getTotalPages", "number", []);
+          const getCurrentPageIndex = Module.cwrap(
+            "getCurrentPageIndex",
+            "number",
+            []
+          );
+          const giveRandomNumber = Module.cwrap("giveRandomNumber", null, []);
+          const generateShape = Module.cwrap("generateShape", "number", []);
+          const getImageWidth = Module.cwrap("getImageWidth", "number", []);
+          const getImageHeight = Module.cwrap("getImageHeight", "number", []);
+
+          // DOM elements
+          const pageDiv = document.getElementById("page");
+          const editorText = document.getElementById("editorText");
+          const pageNumberDiv = document.getElementById("pageNumber");
+          const randomNumberDisplay = document.getElementById(
+            "randomNumberDisplay"
+          );
+          const canvas = document.getElementById("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // JavaScript handler for the random number
+          window.handleRandomNumber = (randomNumber) => {
+            randomNumberDisplay.innerText = `Random Number: ${randomNumber}`;
+          };
+
+          // Update displayed page
+          const updatePage = () => {
+            const text = getCurrentPage();
+            pageDiv.innerText = text;
+            editorText.value = text;
+
+            const currentPage = getCurrentPageIndex();
+            const totalPages = getTotalPages();
+            pageNumberDiv.innerText = `Page: ${currentPage}/${totalPages}`;
+          };
+
+          // Initialize page content
+          updatePage();
+
+          // Navigation
+          document.getElementById("prev").onclick = () => {
+            prevPage();
+            updatePage();
+          };
+          document.getElementById("next").onclick = () => {
+            nextPage();
+            updatePage();
+          };
+
+          // Editing
+          document.getElementById("accept").onclick = () => {
+            const newText = editorText.value;
+            updatePageText(newText);
+            updatePage();
+          };
+
+          document.getElementById("reject").onclick = () => {
+            rejectPageChanges();
+            updatePage();
+          };
+
+          // Generate random number
+          document.getElementById("generateRandom").onclick = () => {
+            giveRandomNumber();
+          };
+
+          // Generate shape
+          document.getElementById("generateShape").onclick = () => {
+            const width = getImageWidth();
+            const height = getImageHeight();
+
+            const imagePointer = generateShape();
+            const imageData = new Uint8ClampedArray(
+              Module.HEAPU8.buffer,
+              imagePointer,
+              width * height * 4
+            );
+
+            const image = new ImageData(imageData, width, height);
+            ctx.putImageData(image, 0, 0);
+          };
+        })
+        .catch((err) => {
+          console.error("Error loading WASM Module:", err);
+        });
+    </script>
+  </body>
+</html>

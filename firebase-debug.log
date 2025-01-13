@@ -1,0 +1,54 @@
+[debug] [2025-01-13T16:18:56.570Z] ----------------------------------------------------------------------
+[debug] [2025-01-13T16:18:56.571Z] Command:       /Users/yurii/.nvm/versions/node/v18.18.0/bin/node /usr/local/bin/firebase init hosting
+[debug] [2025-01-13T16:18:56.571Z] CLI Version:   9.2.1
+[debug] [2025-01-13T16:18:56.572Z] Platform:      darwin
+[debug] [2025-01-13T16:18:56.572Z] Node Version:  v18.18.0
+[debug] [2025-01-13T16:18:56.578Z] Time:          Mon Jan 13 2025 18:18:56 GMT+0200 (Eastern European Standard Time)
+[debug] [2025-01-13T16:18:56.579Z] ----------------------------------------------------------------------
+[debug] [2025-01-13T16:18:56.579Z] 
+[debug] [2025-01-13T16:18:56.582Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-01-13T16:18:56.582Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/yurii/Documents/Work projects/emsdk/poc-wasm
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2025-01-13T16:19:17.689Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2025-01-13T16:19:17.690Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2025-01-13T16:19:17.901Z] <<< HTTP RESPONSE 400 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Mon, 13 Jan 2025 16:19:17 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2025-01-13T16:19:17.902Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects  
+ {"projectId":"gl-poc-wasm","name":"gl-poc-wasm"}
+[debug] [2025-01-13T16:19:18.732Z] <<< HTTP RESPONSE 401 {"www-authenticate":"Bearer realm=\"https://accounts.google.com/\", error=\"invalid_token\"","vary":"X-Origin, Referer, Origin,Accept-Encoding","content-type":"application/json; charset=UTF-8","date":"Mon, 13 Jan 2025 16:19:18 GMT","server":"ESF","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=662","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2025-01-13T16:19:18.732Z] <<< HTTP RESPONSE BODY {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"ACCESS_TOKEN_TYPE_UNSUPPORTED","metadata":{"method":"google.cloudresourcemanager.v1.Projects.CreateProject","service":"cloudresourcemanager.googleapis.com"}}]}}
+[debug] [2025-01-13T16:19:18.863Z] FirebaseError: HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+    at module.exports (/usr/local/lib/node_modules/firebase-tools/lib/responseToError.js:38:12)
+    at Request._callback (/usr/local/lib/node_modules/firebase-tools/lib/api.js:41:35)
+    at self.callback (/usr/local/lib/node_modules/firebase-tools/node_modules/request/request.js:185:22)
+    at Request.emit (node:events:517:28)
+    at Request.emit (node:domain:489:12)
+    at Request.<anonymous> (/usr/local/lib/node_modules/firebase-tools/node_modules/request/request.js:1154:10)
+    at Request.emit (node:events:517:28)
+    at Request.emit (node:domain:489:12)
+    at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/firebase-tools/node_modules/request/request.js:1076:12)
+    at Object.onceWrapper (node:events:631:28)
+    at IncomingMessage.emit (node:events:529:35)
+    at IncomingMessage.emit (node:domain:489:12)
+    at endReadableNT (node:internal/streams/readable:1368:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+[error] 
+[error] Error: Failed to create project. See firebase-debug.log for more info.
