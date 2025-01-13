@@ -1,0 +1,2 @@
+emcc src/main.cpp -s WASM=1 -o main.js -s MODULARIZE=1 -s EXPORT_NAME="createModule" -s EXPORTED_FUNCTIONS="['_getCurrentPage', '_nextPage', '_prevPage', '_updatePageText', '_rejectPageChanges', '_getTotalPages', '_getCurrentPageIndex', '_giveRandomNumber', '_generateShape', '_getImageWidth', '_getImageHeight']" -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']"
+python3 -m http.server
