@@ -82,8 +82,14 @@
         font-size: 18px;
         color: #333;
       }
-      canvas {
+      #canvasWrapper {
         margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      canvas {
+        margin-top: 10px;
         border: 1px solid #ccc;
       }
     </style>
@@ -109,7 +115,7 @@
       <button id="generateRandom">Generate Random Number</button>
       <div id="randomNumberDisplay">Random Number:</div>
     </div>
-    <div>
+    <div id="canvasWrapper">
       <button id="generateShape">Generate Shape</button>
       <canvas id="canvas" width="200" height="200"></canvas>
     </div>
@@ -119,7 +125,6 @@
         .then((Module) => {
           console.log("WASM Module Loaded");
 
-          // Load WASM functions
           const getCurrentPage = Module.cwrap("getCurrentPage", "string", []);
           const nextPage = Module.cwrap("nextPage", null, []);
           const prevPage = Module.cwrap("prevPage", null, []);
